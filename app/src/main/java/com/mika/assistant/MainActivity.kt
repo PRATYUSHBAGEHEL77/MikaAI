@@ -195,18 +195,12 @@ private fun MikaAvatarCard(
 ) {
     val infinite = rememberInfiniteTransition(label = "mika-idle")
     val bob by infinite.animateFloat(
-        initialValue = -3f,
-        targetValue = 3f,
-        animationSpec = infiniteRepeatable(tween(1900, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "mika-bob"
+        initialValue = -0.8f,
+        targetValue = 0.8f,
+        animationSpec = infiniteRepeatable(tween(3200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "mika-subtle-idle"
     )
-    val mouthCycle by infinite.animateFloat(
-        initialValue = 0.15f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(170, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "mika-mouth"
-    )
-    val mouth = if (speaking) mouthCycle else 0.12f
+    val mouth = if (speaking) 0.48f else 0.12f
 
     Card(
         modifier = Modifier.fillMaxWidth(),

@@ -38,8 +38,8 @@ class AndroidTtsProvider(context: Context) : TtsProvider {
 
     private fun engineLanguage() {
         engine.language = Locale.getDefault()
-        engine.setPitch(1.35f)
-        engine.setSpeechRate(1.06f)
+        engine.setPitch(1.12f)
+        engine.setSpeechRate(1.02f)
     }
 
     override fun speak(text: String) {
