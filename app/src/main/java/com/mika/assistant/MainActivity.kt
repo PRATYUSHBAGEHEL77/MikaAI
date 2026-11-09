@@ -2,8 +2,15 @@ package com.mika.assistant
 
 import android.Manifest
 import android.content.Intent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.IntentFilter
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import com.mika.assistant.service.MikaForegroundService
 import android.net.Uri
 import android.os.Bundle
+import android.os.Build
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -39,10 +46,45 @@ import com.mika.assistant.ui.MikaViewModel
 
 class MainActivity : ComponentActivity() {
     private var speechRecognizer: SpeechRecognizer? = null
+    var onBackgroundVoiceResult: ((String) -> Unit)? = null
+
+    private val wakeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            // Android may restrict opening an Activity from the background.
+            // The foreground notification remains the reliable tap-to-open route.
+            if (hasWindowFocus()) {
+                startVoiceCapture(
+                    onText = { onBackgroundVoiceResult?.invoke(it) },
+                    onError = { }
+                )
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent { MikaApp(this) }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter(MikaForegroundService.ACTION_WAKE)
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(wakeReceiver, filter, RECEIVER_NOT_EXPORTED)
+        else @Suppress("DEPRECATION") registerReceiver(wakeReceiver, filter)
+    }
+
+    override fun onStop() {
+        try { unregisterReceiver(wakeReceiver) } catch (_: Exception) {}
+        super.onStop()
+    }
+
+    fun startBackgroundListening() {
+        val intent = Intent(this, MikaForegroundService::class.java).setAction(MikaForegroundService.ACTION_START)
+        ContextCompat.startForegroundService(this, intent)
+    }
+
+    fun stopBackgroundListening() {
+        startService(Intent(this, MikaForegroundService::class.java).setAction(MikaForegroundService.ACTION_STOP))
     }
 
     fun startVoiceCapture(onText: (String) -> Unit, onError: (String) -> Unit) {
@@ -95,6 +137,10 @@ private fun MikaApp(activity: MainActivity, vm: MikaViewModel = viewModel()) {
                 onError = { vm.setListening(false); vm.systemMessage(it) }
             )
         } else vm.systemMessage("Microphone permission is needed for voice input.")
+    }
+    val backgroundMicPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) activity.startBackgroundListening()
+        else vm.systemMessage("Microphone permission is required for background listening.")
     }
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
@@ -174,6 +220,17 @@ private fun MikaApp(activity: MainActivity, vm: MikaViewModel = viewModel()) {
                     }) { Text("Send") }
                 }
                 Spacer(Modifier.height(8.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    OutlinedButton(onClick = {
+                        activity.onBackgroundVoiceResult = { vm.send(it) }
+                        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                            activity.startBackgroundListening()
+                        } else {
+                            backgroundMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+                        }
+                    }, enabled = !state.downloading) { Text("Hey Mika: ON") }
+                    OutlinedButton(onClick = { activity.stopBackgroundListening() }) { Text("Stop background") }
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     OutlinedButton(onClick = { notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) }) { Text("Notifications") }
                     OutlinedButton(onClick = { activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }) { Text("Accessibility") }
