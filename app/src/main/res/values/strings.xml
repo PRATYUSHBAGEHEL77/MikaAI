@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Mika AI</string>
+    <string name="accessibility_description">Allows Mika to read visible interface labels and perform user-requested taps and gestures.</string>
+</resources>
