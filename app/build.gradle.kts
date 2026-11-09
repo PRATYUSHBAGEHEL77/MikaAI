@@ -44,6 +44,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
-    implementation("com.google.ai.edge.litertlm:litertlm-android:latest.release")
+    implementation("com.google.mediapipe:tasks-audio:latest.release")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
