@@ -75,3 +75,7 @@ This is a local-chat integration, not a complete autonomous phone agent:
 The main screen now includes the anime portrait cropped from the reference video supplied in this conversation. Compose animates a gentle idle bob, shows listening/thinking/speaking status, and displays Mika's latest spoken line as a subtitle. Android TextToSpeech utterance callbacks drive a simple open/close mouth overlay while speech is playing.
 
 This is lightweight 2D avatar animation, not a full Live2D/3D rig or phoneme-accurate viseme lip-sync. The face artwork itself is a static portrait; eye blinking, hair physics, multiple facial expressions and per-phoneme mouth shapes are not included yet.
+
+
+## Voice engine
+Mika uses Kokoro-82M Hindi female voice `hf_alpha` through MediaPipe Tasks Audio. The ~295 MB model downloads on first use and then runs locally. Android system TTS fallback is disabled. See `KOKORO_VOICE_UPDATE.md`.
