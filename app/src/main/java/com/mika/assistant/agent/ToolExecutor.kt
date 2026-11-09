@@ -1,7 +1,7 @@
 package com.mika.assistant.agent
 
 import android.Manifest
-import android.app.AlarmClock
+import android.provider.AlarmClock
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -93,7 +93,7 @@ class ToolExecutor(private val context: Context, private val safety: SafetyGate)
     private fun openSettings(which: String): String {
         val action = when (which.lowercase()) {
             "wifi" -> Settings.Panel.ACTION_WIFI
-            "bluetooth" -> Settings.Panel.ACTION_BLUETOOTH
+            "bluetooth" -> Settings.ACTION_BLUETOOTH_SETTINGS
             "internet" -> Settings.Panel.ACTION_INTERNET_CONNECTIVITY
             "sound" -> Settings.ACTION_SOUND_SETTINGS
             "battery" -> Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS

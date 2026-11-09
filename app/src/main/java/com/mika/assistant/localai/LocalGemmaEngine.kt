@@ -138,7 +138,7 @@ class LocalGemmaEngine(context: Context) {
             val activeConversation = conversation
                 ?: throw IllegalStateException("Mika's local model is not loaded yet.")
             activeConversation.sendMessageAsync(prompt).collect { message ->
-                val piece = message.text
+                val piece = message.toString()
                 if (piece.isNotEmpty()) emit(piece)
             }
         }
