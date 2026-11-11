@@ -79,3 +79,6 @@ This is lightweight 2D avatar animation, not a full Live2D/3D rig or phoneme-acc
 
 ## Voice engine
 Mika uses Kokoro-82M Hindi female voice `hf_alpha` through MediaPipe Tasks Audio. The ~295 MB model downloads on first use and then runs locally. Android system TTS fallback is disabled. See `KOKORO_VOICE_UPDATE.md`.
+
+
+Voice engine: ElevenLabs voice ID `9SsFrOutdZkCkU5hIoQm` via a protected server-side proxy. See `ELEVENLABS_SETUP.md`. API key must never be embedded in the APK.

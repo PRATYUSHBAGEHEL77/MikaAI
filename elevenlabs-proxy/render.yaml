@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: mika-elevenlabs-proxy
+    runtime: node
+    rootDir: elevenlabs-proxy
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: ELEVENLABS_API_KEY
+        sync: false

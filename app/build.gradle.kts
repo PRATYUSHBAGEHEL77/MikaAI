@@ -14,12 +14,15 @@ android {
         applicationId = "com.mika.assistant"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1.0-local"
+        versionCode = 3
+        versionName = "1.2.0-elevenlabs"
+        val proxyUrl = (project.findProperty("ELEVENLABS_PROXY_URL") as String?) ?: ""
+        buildConfigField("String", "ELEVENLABS_PROXY_URL", "\"${proxyUrl}\"")
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -44,6 +47,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
-    implementation("com.google.mediapipe:tasks-audio:latest.release")
+    // Keep the LiteRT-LM dependency required by LocalGemmaEngine.
+    implementation("com.google.ai.edge.litertlm:litertlm-android:latest.release")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

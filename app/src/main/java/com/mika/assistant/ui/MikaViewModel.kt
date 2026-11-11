@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mika.assistant.agent.ChatMessage
-import com.mika.assistant.audio.KokoroTtsProvider
+import com.mika.assistant.audio.ElevenLabsTtsProvider
 import com.mika.assistant.audio.TtsProvider
 import com.mika.assistant.localai.LocalGemmaEngine
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ class MikaViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(MikaUiState())
     val state: StateFlow<MikaUiState> = _state.asStateFlow()
 
-    private val tts: TtsProvider = KokoroTtsProvider(app)
+    private val tts: TtsProvider = ElevenLabsTtsProvider(app)
     private val localAi = LocalGemmaEngine(app)
 
     init {
@@ -102,7 +102,7 @@ class MikaViewModel(app: Application) : AndroidViewModel(app) {
                     busy = false,
                     modelDownloaded = true,
                     modelReady = true,
-                    status = "Ready · Kokoro voice · On-device"
+                    status = "Ready · ElevenLabs voice · Online"
                 )
                 speakWithAvatar("Mika is ready!")
             } catch (t: Throwable) {
@@ -151,7 +151,7 @@ class MikaViewModel(app: Application) : AndroidViewModel(app) {
                 if (messages.isNotEmpty() && messages.last().speaker == "Mika") {
                     messages[messages.lastIndex] = messages.last().copy(text = finalText)
                 }
-                _state.value = _state.value.copy(messages = messages, busy = false, status = "Ready · Kokoro voice")
+                _state.value = _state.value.copy(messages = messages, busy = false, status = "Ready · ElevenLabs voice")
                 speakWithAvatar(finalText)
             } catch (t: Throwable) {
                 val messages = _state.value.messages.toMutableList()
